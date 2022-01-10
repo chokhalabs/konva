@@ -40,6 +40,7 @@ var STAGE = 'Stage',
   TOUCHMOVE = 'touchmove',
   TOUCHCANCEL = 'touchcancel',
   WHEEL = 'wheel',
+  KEYDOWN = 'keydown',
   MAX_LAYERS_NUMBER = 5,
   EVENTS = [
     [MOUSEENTER, '_pointerenter'],
@@ -59,6 +60,7 @@ var STAGE = 'Stage',
     [POINTERUP, '_pointerup'],
     [POINTERCANCEL, '_pointercancel'],
     [LOSTPOINTERCAPTURE, '_lostpointercapture'],
+    [KEYDOWN], '_keydown'
   ];
 
 const EVENTS_MAP = {
@@ -98,6 +100,9 @@ const EVENTS_MAP = {
     pointerclick: 'pointerclick',
     pointerdblclick: 'pointerdblclick',
   },
+  keyboard: {
+    [KEYDOWN]: 'keydown'
+  }
 };
 
 const getEventType = (type) => {
@@ -106,6 +111,9 @@ const getEventType = (type) => {
   }
   if (type.indexOf('touch') >= 0) {
     return 'touch';
+  }
+  if (type.indexOf('key') >= 0) {
+    return 'keyboard';
   }
   return 'mouse';
 };
@@ -120,6 +128,9 @@ const getEventsMap = (eventType: string) => {
   }
   if (type === 'mouse') {
     return EVENTS_MAP.mouse;
+  }
+  if (type === 'keyboard') {
+    return EVENTS_MAP.keyboard
   }
 };
 
@@ -173,6 +184,8 @@ export class Stage extends Container<Layer> {
   _mouseDblTimeout: any;
   _touchDblTimeout: any;
   _pointerDblTimeout: any;
+
+  keyboardTargetShape: Shape;
 
   constructor(config: StageConfig) {
     super(checkNoClip(config));
@@ -460,6 +473,17 @@ export class Stage extends Container<Layer> {
         this[methodName](evt);
       });
     });
+    document.body.addEventListener('keydown', this._keydown.bind(this));
+  }
+  _keydown(evt) {
+    const events = getEventsMap(evt.type);
+    // Check if there is an active node
+    // var targetShape = this._getTargetShape("keyboard");
+    const targetShape = this.keyboardTargetShape;
+    // Fire the event using the active node as target
+    if (targetShape) {
+      targetShape._fire(events.keydown, {evt: evt});
+    }
   }
   _pointerenter(evt) {
     this.setPointersPositions(evt);
@@ -688,7 +712,7 @@ export class Stage extends Container<Layer> {
         triggeredOnShape = true;
         this[eventType + 'ClickEndShape'] = shape;
         shape._fireAndBubble(events.pointerup, { ...event });
-
+        this.keyboardTargetShape = shape;
         // detect if click or double click occurred
         if (
           Konva['_' + eventType + 'ListenClick'] &&

@@ -8,7 +8,7 @@
    * Konva JavaScript Framework v8.3.2
    * http://konvajs.org/
    * Licensed under the MIT
-   * Date: Sun Jan 09 2022
+   * Date: Mon Jan 10 2022
    *
    * Original work Copyright (C) 2011 - 2013 by Eric Rowell (KineticJS)
    * Modified work Copyright (C) 2014 - present by Anton Lavrenov (Konva)
@@ -5695,7 +5695,7 @@
   }
 
   // CONSTANTS
-  var STAGE = 'Stage', STRING = 'string', PX = 'px', MOUSEOUT = 'mouseout', MOUSELEAVE = 'mouseleave', MOUSEOVER = 'mouseover', MOUSEENTER = 'mouseenter', MOUSEMOVE = 'mousemove', MOUSEDOWN = 'mousedown', MOUSEUP = 'mouseup', POINTERMOVE = 'pointermove', POINTERDOWN = 'pointerdown', POINTERUP = 'pointerup', POINTERCANCEL = 'pointercancel', LOSTPOINTERCAPTURE = 'lostpointercapture', POINTEROUT = 'pointerout', POINTERLEAVE = 'pointerleave', POINTEROVER = 'pointerover', POINTERENTER = 'pointerenter', CONTEXTMENU = 'contextmenu', TOUCHSTART = 'touchstart', TOUCHEND = 'touchend', TOUCHMOVE = 'touchmove', TOUCHCANCEL = 'touchcancel', WHEEL = 'wheel', MAX_LAYERS_NUMBER = 5, EVENTS = [
+  var STAGE = 'Stage', STRING = 'string', PX = 'px', MOUSEOUT = 'mouseout', MOUSELEAVE = 'mouseleave', MOUSEOVER = 'mouseover', MOUSEENTER = 'mouseenter', MOUSEMOVE = 'mousemove', MOUSEDOWN = 'mousedown', MOUSEUP = 'mouseup', POINTERMOVE = 'pointermove', POINTERDOWN = 'pointerdown', POINTERUP = 'pointerup', POINTERCANCEL = 'pointercancel', LOSTPOINTERCAPTURE = 'lostpointercapture', POINTEROUT = 'pointerout', POINTERLEAVE = 'pointerleave', POINTEROVER = 'pointerover', POINTERENTER = 'pointerenter', CONTEXTMENU = 'contextmenu', TOUCHSTART = 'touchstart', TOUCHEND = 'touchend', TOUCHMOVE = 'touchmove', TOUCHCANCEL = 'touchcancel', WHEEL = 'wheel', KEYDOWN = 'keydown', MAX_LAYERS_NUMBER = 5, EVENTS = [
       [MOUSEENTER, '_pointerenter'],
       [MOUSEDOWN, '_pointerdown'],
       [MOUSEMOVE, '_pointermove'],
@@ -5713,6 +5713,7 @@
       [POINTERUP, '_pointerup'],
       [POINTERCANCEL, '_pointercancel'],
       [LOSTPOINTERCAPTURE, '_lostpointercapture'],
+      [KEYDOWN], '_keydown'
   ];
   const EVENTS_MAP = {
       mouse: {
@@ -5751,6 +5752,9 @@
           pointerclick: 'pointerclick',
           pointerdblclick: 'pointerdblclick',
       },
+      keyboard: {
+          [KEYDOWN]: 'keydown'
+      }
   };
   const getEventType = (type) => {
       if (type.indexOf('pointer') >= 0) {
@@ -5758,6 +5762,9 @@
       }
       if (type.indexOf('touch') >= 0) {
           return 'touch';
+      }
+      if (type.indexOf('key') >= 0) {
+          return 'keyboard';
       }
       return 'mouse';
   };
@@ -5771,6 +5778,9 @@
       }
       if (type === 'mouse') {
           return EVENTS_MAP.mouse;
+      }
+      if (type === 'keyboard') {
+          return EVENTS_MAP.keyboard;
       }
   };
   function checkNoClip(attrs = {}) {
@@ -6067,6 +6077,17 @@
                   this[methodName](evt);
               });
           });
+          document.body.addEventListener('keydown', this._keydown.bind(this));
+      }
+      _keydown(evt) {
+          const events = getEventsMap(evt.type);
+          // Check if there is an active node
+          // var targetShape = this._getTargetShape("keyboard");
+          const targetShape = this.keyboardTargetShape;
+          // Fire the event using the active node as target
+          if (targetShape) {
+              targetShape._fire(events.keydown, { evt: evt });
+          }
       }
       _pointerenter(evt) {
           this.setPointersPositions(evt);
@@ -6275,6 +6296,7 @@
                   triggeredOnShape = true;
                   this[eventType + 'ClickEndShape'] = shape;
                   shape._fireAndBubble(events.pointerup, Object.assign({}, event));
+                  this.keyboardTargetShape = shape;
                   // detect if click or double click occurred
                   if (Konva$2['_' + eventType + 'ListenClick'] &&
                       clickStartShape &&
