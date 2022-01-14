@@ -8,7 +8,7 @@
    * Konva JavaScript Framework v8.3.2
    * http://konvajs.org/
    * Licensed under the MIT
-   * Date: Wed Jan 12 2022
+   * Date: Fri Jan 14 2022
    *
    * Original work Copyright (C) 2011 - 2013 by Eric Rowell (KineticJS)
    * Modified work Copyright (C) 2014 - present by Anton Lavrenov (Konva)
@@ -6077,7 +6077,7 @@
                   this[methodName](evt);
               });
           });
-          document.body.addEventListener('keydown', this._keydown.bind(this));
+          // document.body.addEventListener('keydown', this._keydown.bind(this));
       }
       _keydown(evt) {
           const events = getEventsMap(evt.type);
@@ -6482,6 +6482,7 @@
           this.content.style.userSelect = 'none';
           this.content.className = 'konvajs-content';
           this.content.setAttribute('role', 'presentation');
+          this.content.setAttribute('tabindex', "-1");
           container.appendChild(this.content);
           this._resizeDOM();
       }

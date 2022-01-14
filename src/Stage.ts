@@ -473,7 +473,7 @@ export class Stage extends Container<Layer> {
         this[methodName](evt);
       });
     });
-    document.body.addEventListener('keydown', this._keydown.bind(this));
+    // document.body.addEventListener('keydown', this._keydown.bind(this));
   }
   _keydown(evt) {
     const events = getEventsMap(evt.type);
@@ -925,6 +925,7 @@ export class Stage extends Container<Layer> {
     this.content.className = 'konvajs-content';
 
     this.content.setAttribute('role', 'presentation');
+    this.content.setAttribute('tabindex', "-1");
 
     container.appendChild(this.content);
 
