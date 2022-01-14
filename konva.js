@@ -8,7 +8,7 @@
    * Konva JavaScript Framework v8.3.2
    * http://konvajs.org/
    * Licensed under the MIT
-   * Date: Fri Jan 14 2022
+   * Date: Sat Jan 15 2022
    *
    * Original work Copyright (C) 2011 - 2013 by Eric Rowell (KineticJS)
    * Modified work Copyright (C) 2014 - present by Anton Lavrenov (Konva)
@@ -5713,7 +5713,7 @@
       [POINTERUP, '_pointerup'],
       [POINTERCANCEL, '_pointercancel'],
       [LOSTPOINTERCAPTURE, '_lostpointercapture'],
-      [KEYDOWN], '_keydown'
+      [KEYDOWN, '_keydown']
   ];
   const EVENTS_MAP = {
       mouse: {

@@ -60,7 +60,7 @@ var STAGE = 'Stage',
     [POINTERUP, '_pointerup'],
     [POINTERCANCEL, '_pointercancel'],
     [LOSTPOINTERCAPTURE, '_lostpointercapture'],
-    [KEYDOWN], '_keydown'
+    [KEYDOWN, '_keydown']
   ];
 
 const EVENTS_MAP = {
