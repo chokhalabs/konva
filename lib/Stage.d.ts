@@ -30,7 +30,7 @@ export declare class Stage extends Container<Layer> {
     _mouseDblTimeout: any;
     _touchDblTimeout: any;
     _pointerDblTimeout: any;
-    keyboardTargetShape: Shape;
+    keyboardTargetId: string;
     constructor(config: StageConfig);
     _validateAdd(child: any): void;
     _checkVisibility(): void;

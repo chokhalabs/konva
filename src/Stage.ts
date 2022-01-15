@@ -185,7 +185,7 @@ export class Stage extends Container<Layer> {
   _touchDblTimeout: any;
   _pointerDblTimeout: any;
 
-  keyboardTargetShape: Shape;
+  keyboardTargetId: string;
 
   constructor(config: StageConfig) {
     super(checkNoClip(config));
@@ -479,11 +479,19 @@ export class Stage extends Container<Layer> {
     const events = getEventsMap(evt.type);
     // Check if there is an active node
     // var targetShape = this._getTargetShape("keyboard");
-    const targetShape = this.keyboardTargetShape;
+    const targetShapes = this.find("#" + this.keyboardTargetId);
     // Fire the event using the active node as target
-    if (targetShape) {
-      targetShape._fireAndBubble(events.keydown, {evt: evt});
+    if (targetShapes.length > 0) {
+      const targetShape = targetShapes[0];
+      if (targetShape instanceof Shape) {
+        targetShape._fireAndBubble(events.keydown, {evt: evt});
+      } else {
+        console.error("Tried to fire an event on a node that is not a shape: ", targetShape);
+      }
+    } else  {
+      console.error("No shapes found for the id: " + this.keyboardTargetId);
     }
+    
   }
   _pointerenter(evt) {
     this.setPointersPositions(evt);
@@ -712,7 +720,7 @@ export class Stage extends Container<Layer> {
         triggeredOnShape = true;
         this[eventType + 'ClickEndShape'] = shape;
         shape._fireAndBubble(events.pointerup, { ...event });
-        this.keyboardTargetShape = shape;
+        this.keyboardTargetId = shape.id();
         // detect if click or double click occurred
         if (
           Konva['_' + eventType + 'ListenClick'] &&
