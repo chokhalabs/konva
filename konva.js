@@ -6086,7 +6086,7 @@
           const targetShape = this.keyboardTargetShape;
           // Fire the event using the active node as target
           if (targetShape) {
-              targetShape._fire(events.keydown, { evt: evt });
+              targetShape._fireAndBubble(events.keydown, { evt: evt });
           }
       }
       _pointerenter(evt) {
